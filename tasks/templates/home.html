@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-10">
+  <h1>Últimos Poemas</h1>
+
+  <div class="slick-slider">
+    {% for task in all_tasks %}
+      <div class="card slider-item">
+        <div class="card-body">
+          <h5 class="card-title">{{ task.title }}</h5>
+          <p class="card-text">{{ task.description }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>{{ task.user.username }}</strong></li>
+          <li class="list-group-item">Fecha de publicación: <strong> {{ task.created|date:'j/n/Y' }}</strong></li>
+        </ul>
+
+        <!-- Botones de Me gusta y No me gusta con iconos -->
+        <div class="card-body">
+          <button class="btn btn-outline-success" onclick="likePoem({{ task.id }})">
+            <i class="fas fa-heart"></i> Me gusta
+          </button>
+          <button class="btn btn-outline-danger" onclick="dislikePoem({{ task.id }})">
+            <i class="fas fa-broken-heart"></i> No me gusta
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.slick-slider').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+    });
+  });
+
+  // Funciones para manejar los eventos de Me gusta y No me gusta
+  function likePoem(taskId) {
+    // Implementa aquí la lógica para procesar el Me gusta
+    console.log('Me gusta el poema con ID:', taskId);
+  }
+
+  function dislikePoem(taskId) {
+    // Implementa aquí la lógica para procesar el No me gusta
+    console.log('No me gusta el poema con ID:', taskId);
+  }
+</script>
+{% endblock %}

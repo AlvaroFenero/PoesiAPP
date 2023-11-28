@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+  .post {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .user-circle {
+    background-color: #ccc;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .user-icon {
+    color: #fff;
+    font-size: 14px; /* Ajusta el tamaño del icono según sea necesario */
+  }
+
+  .post-content {
+    flex-grow: 1;
+  }
+
+  .post-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .post-description {
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .post-date,
+  .post-user {
+    font-size: 0.8em;
+    color: #888;
+  }
+</style>
+
+<h1>Mis Poemas</h1>
+
+{% for task in tasks %}
+  <div class="post">
+    <div class="user-circle">
+      <i class="fas fa-user user-icon"></i>
+    </div>
+    <div class="post-content">
+      <div class="post-title">
+        <a href="{% url 'task_detail' task.id %}">
+          {% if task.important %}
+            <strong>{{task.title}}</strong>
+          {% else %}
+            {{task.id}} {{task.title}}
+          {% endif %}
+        </a>
+      </div>
+    
+      <p class="post-description">{{task.description}}</p>
+      <div class="post-user">Publicado por: {{ task.user.username }}</div>
+      <div class="post-date">{{task.datecompleted|date:'M j Y:i'}}</div>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
+
