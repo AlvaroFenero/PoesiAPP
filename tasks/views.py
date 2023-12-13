@@ -9,6 +9,8 @@ from .models import Task
 from django.db.models import F, ExpressionWrapper, fields
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from .models import Comment
+
 
 
 
@@ -118,3 +120,15 @@ def home(request):
     all_tasks = Task.objects.all()
     return render(request, 'home.html', {"all_tasks": all_tasks})
 
+
+
+@login_required
+def add_comment_view(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment', '')
+        user = request.user  # Obtén el usuario autenticado
+        Comment.objects.create(task=task, user=user, text=comment_text)
+
+    return redirect('home')

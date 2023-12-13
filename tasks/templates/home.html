@@ -13,8 +13,29 @@
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><strong>{{ task.user.username }}</strong></li>
-          <li class="list-group-item">Fecha de publicación: <strong> {{ task.created|date:'j/n/Y' }}</strong></li>
+          <li class="list-group-item">Fecha de publicación: <strong>{{ task.created|date:'j/n/Y' }}</strong></li>
         </ul>
+
+        <!-- Caja de Comentarios -->
+        <div class="card-body" id="comments-section-{{ task.id }}">
+          <h5>Comentarios:</h5>
+          {% for comment in task.comments.all %}
+            <p>
+              <span class="comment-username"><strong>{{ comment.user.username }}</strong>:</span>
+              <span class="comment-text">{{ comment.text }}</span>
+            </p>
+          {% endfor %}
+
+          <!-- Formulario para agregar un nuevo comentario -->
+          <form method="post" action="{% url 'add_comment' task.id %}" class="comment-form" data-task-id="{{ task.id }}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="comment">Agregar comentario:</label>
+              <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Comentario</button>
+          </form>
+        </div>
 
         <!-- Botones de Me gusta y No me gusta con iconos -->
         <div class="card-body">
@@ -31,14 +52,36 @@
 </div>
 
 <script>
-  $(document).ready(function(){
+  $(document).ready(function () {
     $('.slick-slider').slick({
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 2000,
     });
+
+    // Evento de submit del formulario
+    $(".comment-form").submit(function (event) {
+      event.preventDefault(); // Evita la recarga de la página al enviar el formulario
+      var taskId = $(this).data('task-id');
+      var commentText = $(this).find("textarea[name='comment']").val();
+
+      // Aquí puedes agregar lógica adicional antes de enviar el comentario al servidor
+
+      // Simula una respuesta exitosa del servidor
+      // En producción, deberías hacer una solicitud AJAX al servidor para agregar el comentario
+      updateComments(taskId, "{{ user.username }}", commentText);
+
+      // Limpia el campo de comentarios después de agregar uno nuevo
+      $(this).find("textarea[name='comment']").val('');
+    });
   });
+
+  // Función para manejar la actualización de comentarios
+  function updateComments(taskId, username, commentText) {
+    // Agrega el nuevo comentario al DOM
+    $("#comments-section-" + taskId).append('<p><span class="comment-username"><strong>' + username + '</strong>:</span> <span class="comment-text">' + commentText + '</span></p>');
+  }
 
   // Funciones para manejar los eventos de Me gusta y No me gusta
   function likePoem(taskId) {
@@ -48,6 +91,7 @@
 
   function dislikePoem(taskId) {
     // Implementa aquí la lógica para procesar el No me gusta
+    
     console.log('No me gusta el poema con ID:', taskId);
   }
 </script>
